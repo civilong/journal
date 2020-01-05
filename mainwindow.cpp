@@ -83,12 +83,59 @@ void MainWindow::incDate()
 
 void MainWindow::updateBox()
 {
+    QDataStream in(&tcpSocket);
+    in.setVersion(QDataStream::Qt_4_3);
+
+    //xuyao genju fuwuqi gaixie
+    forever
+    {
+        int num = 0;
+        if(nextBlockSize == 0)
+        {
+            if(tcpSocket.bytesAvailable() < sizeof(quint16))
+            {
+                break;
+            }
+            in>>nextBlockSize;
+        }
+        if(nextBlockSize == 0xFFFF)
+        {
+            //closeConnection();
+            break;
+        }
+        if(tcpSocket.bytesAvailable() < nextBlockSize)
+        {
+            break;
+        }
+
+        QString summary, plan;
+        if(num == 0)
+        {
+            in>>summary;
+            ui->summaryEdit->setText(str);
+        }
+        else if(num == 1)
+        {
+            in>>plan;
+            ui->planEdit->setText(str);
+            if()
+        }
+
+        num++;
+        nextBlockSize = 0;
+    }
 
 }
 
 void MainWindow::sendRequest()
 {
-
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_3);
+    out<<quint16(0)<<quint8('S')<<quint16(getName())<<getDate().toString();
+    out.device()->seek(0);
+    out<<quint16(block.size() - sizeof(quint16));
+    tcpSocket.write(block);
 }
 
 void MainWindow::error()
