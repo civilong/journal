@@ -1,7 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QDate>
-
+#include <QTcpSocket>
+#include <QDataStream>
 #include <QMainWindow>
 
 namespace Ui {
@@ -15,17 +16,34 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = NULL);
     ~MainWindow();
-    //void setName(const int& index);
-    //void setDate(const QString );
+    //xingming de hanshu
+    int getName();
+    QDate getDate();
+
+    //tongxin xiangguan
+    void connectToServer();
+
 
 public slots:
-    //void sendRequest(const int& index);
-    //void sendRequest(const QString& date);
+    //jiemian xiangguan
+    void setName(const int &index);
+
+    void decDate();
+    void setDate(const QDate &newDate);
+    void incDate();
+
+    void updateBox();
+
+    //tongxinxiangguan
+    void sendRequest();
+    void error();
 
 private:
     Ui::MainWindow *ui;
     int iname;
     QDate date;
+    QTcpSocket tcpSocket;
+    quint16 nextBlockSize;
 };
 
 #endif // MAINWINDOW_H

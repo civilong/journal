@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QTextEdit" name="summaryEdit">
     <property name="geometry">
      <rect>
       <x>164</x>
@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_2">
+   <widget class="QTextEdit" name="planEdit">
     <property name="geometry">
      <rect>
       <x>164</x>
@@ -34,7 +34,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="saveButton">
     <property name="geometry">
      <rect>
       <x>614</x>
@@ -83,7 +83,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="yesterdayButton">
+   <widget class="QPushButton" name="yestButton">
     <property name="geometry">
      <rect>
       <x>470</x>
@@ -96,7 +96,7 @@
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="tomoButton">
     <property name="geometry">
      <rect>
       <x>631</x>
