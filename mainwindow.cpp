@@ -2,15 +2,17 @@
 #include "ui_mainwindow.h"
 #include <QHostAddress>
 #include <QByteArray>
+#include <QDebug>
 
-#define serverip "192.168.0.1"
-#define port 80100
+#define serverip "127.0.0.1"
+#define port 10087
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    iname = 0;
     ui->setupUi(this);
     ui->nameBox->addItem(tr("姓名"));
     ui->nameBox->addItem(tr("杭旭"));
@@ -50,7 +52,8 @@ void MainWindow::connectToServer()
 {
     if(this->iname != 0)
     {
-        tcpSocket.connectToHost(QHostAddress::LocalHost, port);
+        tcpSocket.abort();
+        tcpSocket.connectToHost(serverip, port);
         nextBlockSize = 0;
     }
 }
@@ -58,6 +61,7 @@ void MainWindow::connectToServer()
 void MainWindow::setName(const int &index)
 {
     this->iname = index;
+    qDebug("The name is set as:%d", index);
     connectToServer();
 }
 
@@ -71,6 +75,7 @@ void MainWindow::decDate()
 void MainWindow::setDate(const QDate &newDate)
 {
     this->date = newDate;
+    qDebug("The time is set as:%s", newDate.toString());
     connectToServer();
 }
 
@@ -83,58 +88,24 @@ void MainWindow::incDate()
 
 void MainWindow::updateBox()
 {
+    qDebug("Get reply!");
     QDataStream in(&tcpSocket);
     in.setVersion(QDataStream::Qt_4_3);
-
-    //xuyao genju fuwuqi gaixie
-    forever
-    {
-        int num = 0;
-        if(nextBlockSize == 0)
-        {
-            if(tcpSocket.bytesAvailable() < sizeof(quint16))
-            {
-                break;
-            }
-            in>>nextBlockSize;
-        }
-        if(nextBlockSize == 0xFFFF)
-        {
-            //closeConnection();
-            break;
-        }
-        if(tcpSocket.bytesAvailable() < nextBlockSize)
-        {
-            break;
-        }
-
-        QString summary, plan;
-        if(num == 0)
-        {
-            in>>summary;
-            ui->summaryEdit->setText(str);
-        }
-        else if(num == 1)
-        {
-            in>>plan;
-            ui->planEdit->setText(str);
-            if()
-        }
-
-        num++;
-        nextBlockSize = 0;
-    }
-
+    QString reply;
+    in>>reply;
+    ui->summaryEdit->setText(reply);
 }
 
 void MainWindow::sendRequest()
 {
+    qDebug("Start send request");
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_3);
-    out<<quint16(0)<<quint8('S')<<quint16(getName())<<getDate().toString();
-    out.device()->seek(0);
-    out<<quint16(block.size() - sizeof(quint16));
+    out<<getDate().toString();
+    //out<<quint16(0)<<quint8('S')<<quint16(getName())<<getDate().toString();
+    //out.device()->seek(0);
+    //out<<quint16(block.size() - sizeof(quint16));
     tcpSocket.write(block);
 }
 
