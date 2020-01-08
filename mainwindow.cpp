@@ -75,7 +75,7 @@ void MainWindow::decDate()
 void MainWindow::setDate(const QDate &newDate)
 {
     this->date = newDate;
-    qDebug("The time is set as:%s", newDate.toString());
+    qDebug("The time is set as:%s", qPrintable(newDate.toString()));
     connectToServer();
 }
 
